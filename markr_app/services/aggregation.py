@@ -1,6 +1,7 @@
 import logging
 import numpy as np
 from markr_app.models import TestResult
+from markr_app.utils.errors import ZeroMarksError
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +24,12 @@ def calculate_aggregates(test_id):
     marks_obtained = [result.marks_obtained for result in results]
 
     # Find the max available marks for this test
-    max_marks_available = max(result.mark_available for result in results)
+    max_marks_available = max(result.marks_available for result in results)
 
     # Check if the max_marks_available is 0 to avoid division by 0
     if max_marks_available == 0:
         logger.warning(f"Maximum available marks is zero for test ID: {test_id}")
-        raise ValueError(f"Maximum available marks is zero for test ID: {test_id}")
+        raise ZeroMarksError(f"Maximum available marks is zero for test ID: {test_id}")
     
     # Calculate the aggregate stats
     count = len(marks_obtained)
@@ -56,6 +57,7 @@ def calculate_aggregates(test_id):
         "mean": mean_percent,
         "count": count,
         "p25": p25_percent,
+        "p50": p50_percent,
         "p75": p75_percent,
         "min": min_percent,
         "max": max_percent,

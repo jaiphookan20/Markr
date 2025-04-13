@@ -6,6 +6,12 @@ class ValidationError(ValueError):
         self.message = message
         super().__init__(self.message)
 
+class ZeroMarksError(Exception):
+    """Exception raised when marks_available is zero"""
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
 def register_error_handlers(app):
     """Register error handlers for the app"""
     

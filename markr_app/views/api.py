@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from markr_app.utils.errors import ValidationError
+from markr_app.utils.errors import ValidationError, ZeroMarksError
 from markr_app.services.ingestion import process_test_results
 from markr_app.services.aggregation import calculate_aggregates
 
@@ -58,6 +58,13 @@ def get_aggregate_results(test_id):
         aggregates = calculate_aggregates(test_id)
 
         return jsonify(aggregates), 200
+
+    except ZeroMarksError as e:
+        # Return server error for zero marks
+        return jsonify({
+            'error': 'Internal Server Error',
+            'message': str(e)
+        }), 500
 
     except ValueError as e:
         # Return not found error

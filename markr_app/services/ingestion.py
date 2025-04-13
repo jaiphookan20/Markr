@@ -29,7 +29,7 @@ def process_test_results(xml_content):
             # Check if result already exists
             existing_result = TestResult.find_by_student_and_test(student_number, test_id)
             
-            if existing_result:
+            if existing_result and hasattr(existing_result, 'marks_obtained'):
                 # If the new result has a higher score, update the existing record
                 if result_data['marks_obtained'] > existing_result.marks_obtained:
                     existing_result.first_name = result_data['first_name']
