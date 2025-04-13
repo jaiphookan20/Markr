@@ -26,6 +26,14 @@ class TestingConfig(Config):
     FLASK_ENV = 'testing'
     FLASK_DEBUG = True
 
+    db_user = os.environ.get('POSTGRES_USER');
+    db_password = os.environ.get('POSTGRES_PASSWORD');
+    db_host = os.environ.get('DB_HOST', 'db')  # 'db' in Docker, 'localhost' otherwise
+    db_port = os.environ.get('DB_PORT', '5432')
+
+    # Always use markrdb_test for testing
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/markrdb_test"
+
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
