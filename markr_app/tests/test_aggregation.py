@@ -112,7 +112,7 @@ class TestAggregation:
         assert 'Internal Server Error' in response.json['error']
         assert 'Maximum available marks is zero' in response.json['message']
     
-    def test_aggregation_nonexistent_test(self, client, sample_data):
+    def test_aggregation_nonexistent_test(self, client):
         """Test aggregation endpoint for a non-existent test """
         
         # Get aggregates for non-existent test
