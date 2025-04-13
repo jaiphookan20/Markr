@@ -68,12 +68,6 @@ Overall, whereas I have indeed utilised AI over the course of the building of th
 *   **Aggregation:** The current implementation fetches all results for a given `test_id` into memory and uses NumPy for calculations. While suitable for the prototype stage, this approach might become slow for tests with a very large number of submissions.
 *   **Indexing:** A database index has been added to the `test_id` column in the `test_results` table (`models.py`). This speeds up the initial query to find relevant records for aggregation.
 
-## Future Considerations (Beyond Prototype)
-
-*   **Scalability (Aggregation):** For improved performance with large datasets or real-time dashboards, migrate the aggregation logic to run directly within the database using SQL aggregate functions (e.g., `AVG`, `COUNT`, `PERCENTILE_CONT`). This avoids pulling large amounts of data into the application memory.
-*   **Materialized Views/Summary Tables:** Consider creating pre-calculated summary tables or materialized views for aggregates, especially if aggregate reads are frequent.
-*   **Caching:** Implement caching (e.g., Redis, Memcached) for the aggregate endpoint results, invalidating the cache upon new data ingestion.
-
 ## How to Build and Run
 
 **Prerequisites:**
