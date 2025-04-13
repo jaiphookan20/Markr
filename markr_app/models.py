@@ -7,7 +7,7 @@ class TestResult(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_number = db.Column(db.String(50), nullable=False, index=True)
-    test_id = db.Column(db.String(100), nullable=False)
+    test_id = db.Column(db.String(100), nullable=False, index=True)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     marks_obtained = db.Column(db.Integer, nullable=False)
