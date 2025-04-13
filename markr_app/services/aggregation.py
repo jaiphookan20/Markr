@@ -23,7 +23,7 @@ def calculate_aggregates(test_id):
     marks_obtained = [result.marks_obtained for result in results]
 
     # Find the max available marks for this test
-    max_marks_available = max(result.mark_available for result in results)
+    max_marks_available = max(result.marks_available for result in results)
 
     # Check if the max_marks_available is 0 to avoid division by 0
     if max_marks_available == 0:
