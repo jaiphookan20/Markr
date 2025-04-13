@@ -3,18 +3,12 @@ services:
     build: .
     ports:
       - "5000:5000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/markrdb
-      - FLASK_APP=markr_app.app
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1
-      - SECRET_KEY=${SECRET_KEY:-JAI}
     env_file:
       - .env.docker
     depends_on:
       - db
     volumes:
-      - ./markr_app:/markr_app/markr_app
+      - .:/markr_app
     restart: unless-stopped
 
   db:
