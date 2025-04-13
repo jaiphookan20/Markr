@@ -4,6 +4,14 @@ from markr_app.config import config
 from markr_app.database import db
 from markr_app.utils.errors import register_error_handlers
 from markr_app.views.api import api_bp
+import time
+import logging
+
+# Configure basic logging
+logging.basicConfig(
+    level=logging.INFO, 
+    format='%(asctime)s %(levelname)s %(name)s: %(message)s'
+)
 
 def create_app(config_name=None):
     """Create & configure the Flask app"""
