@@ -1,20 +1,42 @@
-from flask import Flask, request, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-from dotenv import load_dotenv
 import os
+from flask import Flask
+from markr_app.config import config
+from markr_app.database import db
+from markr_app.utils.errors import register_error_handlers
+from markr_app.views.api import api_bp
 
-app = Flask(__name__)
+def create_app(config_name=None):
+    """Create & configure the Flask app"""
+    app = Flask(__name__)
 
-# Load environment variables from .env file
-load_dotenv()
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # Determine the config to use
+    if config_name is None:
+        config_name = os.environ.get('FLASK_ENV', 'default')
 
-db = SQLAlchemy(app)
-CORS(app)
+    # Load config
+    app.config.from_object(config[config_name])
+    db.init_app(app)
+
+    # Register API blueprint
+    app.register_blueprint(api_bp)
+
+    # Register the error handlers
+    register_error_handlers(app)
+
+    # Create the DB tables if they don't exist
+    with app.app_context():
+        try:
+            db.create_all()
+            app.logger.info("Database tables created successfully")
+        except Exception as e:
+            app.logger.error(f"Error creating database tables: {str(e)}")
+
+    return app
+
+app = create_app()
+
+if __name__ == '__main__':
+    app.run(host=app.config['HOST'], port=app.config['PORT'])
 
 
-
-
-
+        
