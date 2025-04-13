@@ -1,18 +1,49 @@
 from flask import Blueprint, request, jsonify
 from markr_app.utils.errors import ValidationError
+from markr_app.services.ingestion import process_test_results
 
 api_bp = Blueprint('api', __name__)
 
-@api_bp.route('/upload', methods=['POST'])
-def upload_test_results():
+@api_bp.route('/import', methods=['POST'])
+def import_results():
     """Import XML test results Endpoint"""
 
-    # check content type
-    if request.content_type != 'text/xml+makr':
-        raise ValidationError('Content-Type must be text/xml+markr')
+    content_type = request.headers.get('Content-Type', '')
     
-    # TODO: Implement XML validation, parsing & DB insertion
-    return jsonify({"message": "Import endpoint"}), 501
+    if content_type != 'text/xml+markr':
+        return jsonify({
+            'error': 'Unsupported Media Type',
+            'message': 'Expected Content-Type: text/xml+markr'
+        }), 415
+    
+    # Get XML content from the request body
+    xml_content = request.data
+    if not xml_content:
+        return jsonify({
+            'error': 'Bad Request',
+            'message': 'Request body is empty'
+        }), 400
+    
+    try:
+        # Process the XML test results
+        processed_count = process_test_results(xml_content)
+
+        return jsonify({
+            'success': True,
+            'message': f"Successfully processed {processed_count} test results"
+        }), 200
+    except ValidationError as e:
+        # Return validation error
+        return jsonify({
+            'error': 'Validation Error',
+            'message': str(e)
+        }), 400
+    except Exception as e:
+        # Return validation error
+        return jsonify({
+            'error': 'Internal Server Error',
+            'message': 'An unexpected error occured while processing the test results'
+        }), 500
 
 @api_bp.route('/results/<test_id>/aggregate', methods=['GET'])
 def get_aggregate_results(test_id):
