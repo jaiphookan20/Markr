@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/markrdb
+      - FLASK_APP=markr_app.app
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+    volumes:
+      - .:/markr_app
+    restart: unless-stopped
+
+  db:
+    image: postgres:13-alpine
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.docker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data: 
